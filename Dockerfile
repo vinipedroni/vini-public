@@ -18,11 +18,13 @@ EXPOSE 8501
 RUN adduser -u 5678 --disabled-password --gecos "" appuser
 
 WORKDIR /home/appuser/app
-COPY image_infestion.py /home/appuser/app
+COPY image_ingestion.py /home/appuser/app
+COPY inference_ui.py /home/appuser/app
+
 
 
 RUN chown -R appuser /home/appuser/app
 
 USER appuser
 
-ENTRYPOINT ["streamlit", "run", "chat.py", "--server.port=8501", "--server.address=0.0.0.0"]
+ENTRYPOINT ["streamlit", "run", "inference_ui.py", "--server.port=8501", "--server.address=0.0.0.0"]
