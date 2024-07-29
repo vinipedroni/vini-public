@@ -27,6 +27,5 @@ RUN chown -R appuser /home/appuser/app
 
 USER appuser
 
-RUN python3.12 image_ingestion.py
-
+ENTRYPOINT ["python3.12", "image_ingestion.py"]
 ENTRYPOINT ["streamlit", "run", "inference_ui.py", "--server.port=8501", "--server.address=0.0.0.0"]
