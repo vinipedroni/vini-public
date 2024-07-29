@@ -10,7 +10,6 @@ from datetime import datetime
 import concurrent.futures
 
 # Specify the role to assume and the AWS Region
-#role_arn = 'arn:aws:iam::791800610455:role/RepairCostRole' #Add your Role ARN from the CloudFormation Template
 #region = 'us-east-1'
 
 # Create a Boto3 STS client
