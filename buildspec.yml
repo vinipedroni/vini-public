@@ -1,60 +1,35 @@
-# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-# SPDX-License-Identifier: MIT-0
+# Change the following to your desired values:
+#   __ACCOUNT_NUMBER__
+#   __ECR_REGION__
+#   __ECR_REPOSITORY_NAME__
+#   __ECS_CONTAINER_NAME__
 
 version: 0.2
-
-#env:
-  #variables:
-     # key: "value"
-     # key: "value"
-  #parameter-store:
-     # key: "value"
-     # key: "value"
-  #secrets-manager:
-     # key: secret-id:json-key:version-stage:version-id
-     # key: secret-id:json-key:version-stage:version-id
-  #exported-variables:
-     # - variable
-     # - variable
-  #git-credential-helper: yes
 phases:
-  #install:
-    #If you use the Ubuntu standard image 2.0 or later, you must specify runtime-versions.
-    #If you specify runtime-versions and use an image other than Ubuntu standard image 2.0, the build fails.
-    #runtime-versions:
-      # name: version
-      # name: version
-    #commands:
-      # - command
-      # - command
+  install:
+    runtime-versions:
+      docker: 18
   pre_build:
     commands:
-       - echo Logging in to Amazon ECR...
-       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - echo Logging in to Amazon ECR...
+      - aws --version
+      - $(aws ecr get-login --region __ECR_REGION__ --no-include-email)
+      - REPOSITORY_URI=__ACCOUNT_NUMBER__.dkr.ecr.__ECR_REGION__.amazonaws.com/my-ecr-repo
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
   build:
     commands:
-       - docker build -t $IMAGE_REPO_NAME .
-       - docker tag $IMAGE_REPO_NAME:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest
+      - echo Build started on `date`
+      - echo Building the Docker image...          
+      - docker build -t $REPOSITORY_URI:latest .
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
   post_build:
     commands:
-       - echo Build completed on `date`
-       - echo Pushing the Docker image...
-       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest
-#reports:
-  #report-name-or-arn:
-    #files:
-      # - location
-      # - location
-    #base-directory: location
-    #discard-paths: yes
-    #file-format: JunitXml | CucumberJson
-#artifacts:
-  #files:
-    # - location
-    # - location
-  #name: $(date +%Y-%m-%d)
-  #discard-paths: yes
-  #base-directory: location
-#cache:
-  #paths:
-    # - paths
+      - echo Build completed on `date`
+      - echo Pushing the Docker images...
+      - docker push $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - echo Writing image definitions file...
+      - printf '[{"name”:"__ECS_CONTAINER_NAME__","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+artifacts:
+  files: imagedefinitions.json
