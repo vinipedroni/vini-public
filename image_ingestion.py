@@ -14,21 +14,9 @@ import concurrent.futures
 
 # Create a Boto3 STS client
 sts_client = boto3.client('sts')
-# Call the assume_role method of the STSConnection object and pass the role
-# ARN and a role session name.
-get_session_creds=sts_client.get_session_token()
-
-#get access, secret and token from assumed role
-access_key = get_session_creds['Credentials']['AccessKeyId']
-secret_key = get_session_creds['Credentials']['SecretAccessKey'] 
-session_token = get_session_creds['Credentials']['SessionToken']
 
 #Starts the Session with the assumed role
-session = boto3.Session(
-  aws_access_key_id=access_key,
-  aws_secret_access_key=secret_key,
-  aws_session_token=session_token
-)
+session = boto3.Session()
 
 #Set variables for the locations of each data_set
 civic_folder = './data_set/civic' 
