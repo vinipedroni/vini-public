@@ -17,19 +17,14 @@ region = 'us-east-1'
 
 # Create a Boto3 STS client
 sts_client = boto3.client('sts')
-
 # Call the assume_role method of the STSConnection object and pass the role
 # ARN and a role session name.
-assumed_role_object=sts_client.assume_role(
-    RoleArn=role_arn,
-    RoleSessionName="AssumeRoleSession1"
-)
+get_session_creds=sts_client.get_session_token()
 
 #get access, secret and token from assumed role
-access_key = assumed_role_object['Credentials']['AccessKeyId']
-secret_key = assumed_role_object['Credentials']['SecretAccessKey'] 
-session_token = assumed_role_object['Credentials']['SessionToken']
-
+access_key = get_session_creds['Credentials']['AccessKeyId']
+secret_key = get_session_creds['Credentials']['SecretAccessKey'] 
+session_token = get_session_creds['Credentials']['SessionToken']
 #Starts the Session with the assumed role
 session = boto3.Session(
   aws_access_key_id=access_key,
