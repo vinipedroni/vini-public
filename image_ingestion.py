@@ -14,25 +14,22 @@ import concurrent.futures
 #region = 'us-east-1'
 
 # Create a Boto3 STS client
-#sts_client = boto3.client('sts')
+sts_client = boto3.client('sts')
 # Call the assume_role method of the STSConnection object and pass the role
 # ARN and a role session name.
-#assumed_role_object=sts_client.assume_role(
-#    RoleArn=role_arn,
-#    RoleSessionName="AssumeRoleSession1"
-#)
+get_session_creds=sts_client.get_session_token()
 
 #get access, secret and token from assumed role
-#access_key = assumed_role_object['Credentials']['AccessKeyId']
-#secret_key = assumed_role_object['Credentials']['SecretAccessKey'] 
-#session_token = assumed_role_object['Credentials']['SessionToken']
+access_key = get_session_creds['Credentials']['AccessKeyId']
+secret_key = get_session_creds['Credentials']['SecretAccessKey'] 
+session_token = get_session_creds['Credentials']['SessionToken']
 
 #Starts the Session with the assumed role
-#session = boto3.Session(
-#  aws_access_key_id=access_key,
-#  aws_secret_access_key=secret_key,
-#  aws_session_token=session_token
-#)
+session = boto3.Session(
+  aws_access_key_id=access_key,
+  aws_secret_access_key=secret_key,
+  aws_session_token=session_token
+)
 
 #Set variables for the locations of each data_set
 civic_folder = './data_set/civic' 
@@ -40,7 +37,7 @@ corolla_folder = './data_set/corolla'
 altima_folder = './data_set/altima' 
 
 #Get SSM Parameter values for OpenSearch Domain and
-ssm = boto3.client('ssm')
+ssm = session.client('ssm')
 parameters = ['/car-repair/collection-domain-name', '/car-repair/s3-bucket'] 
 response = ssm.get_parameters(
     Names=parameters,
@@ -57,8 +54,8 @@ s3_bucket = parameter2_value = response['Parameters'][1]['Value'] #bucket name f
 s3_folder = 'repair-data/'
 
 #Initialize OpenSearch Client
-credentials = boto3.get_credentials()
-client = boto3.client('opensearchserverless')
+credentials = session.get_credentials()
+client = session.client('opensearchserverless')
 service = 'aoss'
 region = 'us-east-1'
 awsauth = AWS4Auth(credentials.access_key, credentials.secret_key,
@@ -67,7 +64,7 @@ awsauth = AWS4Auth(credentials.access_key, credentials.secret_key,
 #Set MultiModal Embeddings, bedrock client and S3 client
 model_name = "amazon.titan-embed-image-v1"
 bedrock = session.client("bedrock-runtime")
-s3 = boto3.client('s3')
+s3 = session.client('s3')
 
 #Define the JSON Creation metadata instruction for each car Make/Model
 instruction_civic = 'Instruction: You are a damage repair cost estimator and based on the image you need to create a json output as close as possible to the <model>, \
@@ -85,7 +82,7 @@ you need to estimate the repair cost to populate within the output and you need 
 you also need to provide a damage_description which is short and less than 10 words. Just provide the json output in the response, do not explain the reasoning. \
 For testing purposes assume the image is from a Nissan Altima in the state of Florida.'
 
-bedrock_client = boto3.client('bedrock-runtime')
+bedrock_client = session.client('bedrock-runtime')
 
 
 #Define function that will Create the JSON Metadata for the given damage image

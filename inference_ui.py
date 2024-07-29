@@ -12,33 +12,33 @@ st.set_page_config(page_title="Damage Repair Cost Estimator") #HTML title
 st.title("Damage Repair Cost Estimator") #page title
 
 # Specify the role to assume and the AWS Region
-#role_arn = 'arn:aws:iam::791800610455:role/RepairCostRole' #Add your Role ARN from the CloudFormation Template
-#region = 'us-east-1'
+role_arn = 'arn:aws:iam::791800610455:role/RepairCostRole' #Add your Role ARN from the CloudFormation Template
+region = 'us-east-1'
 
 # Create a Boto3 STS client
-#sts_client = boto3.client('sts')
+sts_client = boto3.client('sts')
 
 # Call the assume_role method of the STSConnection object and pass the role
 # ARN and a role session name.
-#assumed_role_object=sts_client.assume_role(
-#    RoleArn=role_arn,
-#    RoleSessionName="AssumeRoleSession1"
-#)
+assumed_role_object=sts_client.assume_role(
+    RoleArn=role_arn,
+    RoleSessionName="AssumeRoleSession1"
+)
 
 #get access, secret and token from assumed role
-#access_key = assumed_role_object['Credentials']['AccessKeyId']
-#secret_key = assumed_role_object['Credentials']['SecretAccessKey'] 
-#session_token = assumed_role_object['Credentials']['SessionToken']
+access_key = assumed_role_object['Credentials']['AccessKeyId']
+secret_key = assumed_role_object['Credentials']['SecretAccessKey'] 
+session_token = assumed_role_object['Credentials']['SessionToken']
 
 #Starts the Session with the assumed role
-#session = boto3.Session(
-#  aws_access_key_id=access_key,
-#  aws_secret_access_key=secret_key,
-#  aws_session_token=session_token
-#)
+session = boto3.Session(
+  aws_access_key_id=access_key,
+  aws_secret_access_key=secret_key,
+  aws_session_token=session_token
+)
 
 #Get SSM Parameter values for OpenSearch Domain and
-ssm = boto3.client('ssm')
+ssm = session.client('ssm')
 parameters = ['/car-repair/collection-domain-name', '/car-repair/distribution-domain-name'] 
 response = ssm.get_parameters(
     Names=parameters,
@@ -54,8 +54,8 @@ os_index_name = 'repair-cost-data' #os index name that will be created
 cf_url = parameter2_value = response['Parameters'][1]['Value'] #get this from the CloudFormation template that created the CloudFront distribution
 
 #Initialize OpenSearch Client
-credentials = boto3.get_credentials()
-client = boto3.client('opensearchserverless')
+credentials = session.get_credentials()
+client = session.client('opensearchserverless')
 service = 'aoss'
 region = 'us-east-1'
 awsauth = AWS4Auth(credentials.access_key, credentials.secret_key,
@@ -177,7 +177,7 @@ if upload_file is not None:
     ]
     }
     invoke_body = json.dumps(invoke_body).encode('utf-8')
-    client = boto3.client('bedrock-runtime')
+    client = session.client('bedrock-runtime')
 #here is where we invoke Claude and take its response.
     response = client.invoke_model(
         body=invoke_body,
