@@ -33,7 +33,8 @@ os_host = coll_domain_name #collection host name from the cloudformation templat
 os_index_name = 'repair-cost-data' #os index name that will be created
 
 #set cloudfront url
-cf_url = parameter2_value = response['Parameters'][1]['Value'] #get this from the CloudFormation template that created the CloudFront distribution
+parameter2_value = response['Parameters'][1]['Value']
+cf_url = parameter2_value #get this from the CloudFormation template that created the CloudFront distribution
 
 #Initialize OpenSearch Client
 credentials = session.get_credentials()

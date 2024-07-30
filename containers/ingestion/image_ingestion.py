@@ -39,7 +39,8 @@ os_host = coll_domain_name #collection host name from the cloudformation templat
 os_index_name = 'repair-cost-data' #os index name that will be created
 
 #Set S3 Details where images will be stored
-s3_bucket = parameter2_value = response['Parameters'][1]['Value'] #bucket name from the cloudformation template
+parameter2_value = response['Parameters'][1]['Value']
+s3_bucket = parameter2_value #bucket name from the cloudformation template
 s3_folder = 'repair-data/'
 
 #Initialize OpenSearch Client
