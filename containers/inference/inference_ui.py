@@ -230,7 +230,7 @@ if upload_file is not None:
                             data=body,
                             headers=headers)
     results = response.json()
-
+    print(results)
     
     closest_match_1 = results['hits']['hits'][0]['_source']['metadata']
     closest_match_2 = results['hits']['hits'][1]['_source']['metadata']
