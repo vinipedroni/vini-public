@@ -27,4 +27,3 @@ RUN chown -R appuser /home/appuser/app
 USER appuser
 
 ENTRYPOINT ["python3.12", "image_ingestion.py"]
-]
