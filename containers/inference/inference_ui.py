@@ -11,8 +11,7 @@ from io import BytesIO
 st.set_page_config(page_title="Damage Repair Cost Estimator") #HTML title
 st.title("Damage Repair Cost Estimator") #page title
 
-# Specify the role to assume and the AWS Region
-region = 'us-east-1'
+
 
 # Create a Boto3 STS client
 sts_client = boto3.client('sts')
@@ -40,7 +39,7 @@ cf_url = parameter2_value = response['Parameters'][1]['Value'] #get this from th
 credentials = session.get_credentials()
 client = session.client('opensearchserverless')
 service = 'aoss'
-region = 'us-east-1'
+region = session.region_name
 awsauth = AWS4Auth(credentials.access_key, credentials.secret_key,
                    region, service, session_token=credentials.token)
 
