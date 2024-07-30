@@ -26,7 +26,7 @@ COPY data_set/corolla /home/appuser/app/corolla
 COPY image_ingestion.py /home/appuser/app
 
 RUN ls -la
-RUN ls -la /civic
+RUN ls -la civic
 RUN chown -R appuser /home/appuser/app
 
 USER appuser
