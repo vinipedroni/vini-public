@@ -19,6 +19,7 @@ RUN adduser -u 5678 --disabled-password --gecos "" appuser
 
 WORKDIR /home/appuser/app
 COPY inference_ui.py /home/appuser/app
+RUN cat inference_ui.py
 
 RUN ls -la
 RUN chown -R appuser /home/appuser/app
