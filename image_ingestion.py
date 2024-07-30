@@ -18,10 +18,11 @@ sts_client = boto3.client('sts')
 #Starts the Session with the assumed role
 session = boto3.Session()
 
+
 #Set variables for the locations of each data_set
-civic_folder = './data_set/civic' 
-corolla_folder = './data_set/corolla' 
-altima_folder = './data_set/altima' 
+civic_folder = '/home/appuser/app/data_set/civic' 
+corolla_folder = '/home/appuser/app/data_set/corolla' 
+altima_folder = '/home/appuser/app/data_set/altima' 
 
 #Get SSM Parameter values for OpenSearch Domain and
 ssm = session.client('ssm')
@@ -44,7 +45,7 @@ s3_folder = 'repair-data/'
 credentials = session.get_credentials()
 client = session.client('opensearchserverless')
 service = 'aoss'
-region = 'us-east-1'
+region = session.region_name
 awsauth = AWS4Auth(credentials.access_key, credentials.secret_key,
                    region, service, session_token=credentials.token)
 
