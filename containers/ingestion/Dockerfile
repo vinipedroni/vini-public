@@ -24,6 +24,7 @@ COPY data_set/altima /home/appuser/app/altima
 COPY data_set/civic /home/appuser/app/civic
 COPY data_set/corolla /home/appuser/app/corolla
 COPY image_ingestion.py /home/appuser/app
+RUN cat image_ingestion.py
 
 RUN ls -la
 RUN ls -la civic
