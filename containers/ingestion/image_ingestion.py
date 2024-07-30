@@ -20,9 +20,9 @@ session = boto3.Session()
 
 
 #Set variables for the locations of each data_set
-civic_folder = '/home/appuser/app//data_set/civic' 
-corolla_folder = '/home/appuser/app//data_set/corolla' 
-altima_folder = '/home/appuser/app//data_set/altima' 
+civic_folder = '/home/appuser/app/data_set/civic' 
+corolla_folder = '/home/appuser/app/data_set/corolla' 
+altima_folder = '/home/appuser/app/data_set/altima' 
 
 #Get SSM Parameter values for OpenSearch Domain and
 ssm = session.client('ssm')
