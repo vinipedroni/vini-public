@@ -18,6 +18,8 @@ EXPOSE 8501
 RUN adduser -u 5678 --disabled-password --gecos "" appuser
 
 WORKDIR /home/appuser/app
+RUN ls -la
+RUN pwd
 COPY /containers/ingestion/data_set /home/appuser/app
 COPY /containers/ingestion/image_ingestion.py /home/appuser/app
 
