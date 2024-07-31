@@ -77,7 +77,9 @@ selected_damage_area = st.sidebar.multiselect('Damage Area. Select as many parts
 selected_damage_type = st.sidebar.multiselect('Damage Type. Select as many damage types as possible that can describe the damage: ', damage_type_options)
 selected_damage_sev = st.sidebar.selectbox('Damage Severity', damage_sev_option)
 
+matches = ['1', '2', '3']
 
+number_of_matches = st.sidebar.selectbox('Number of matches from the OS Vector DB to match with the current image. Max of 3', matches)
 # session state is valid through out the lifecycle of the app until the whole page is reloaded. we initialize the key to 0 here
 if "uploader_key" not in st.session_state:
     st.session_state.uploader_key = 0
@@ -216,7 +218,7 @@ if upload_file is not None:
     data_embedded = json.loads(body_string)  
     image_vector = data_embedded['embedding']
     json_embedding = json.loads(body_string)
-    params = {"size": 3} 
+    params = {"size": number_of_matches} 
 
     # Build search body with kNN query, with the vector created by Titan
     body = {
@@ -224,7 +226,7 @@ if upload_file is not None:
         "knn": {
         "damage_vector": {
             "vector": image_vector,
-            "k": 3
+            "k": number_of_matches
         }
         }
     }
