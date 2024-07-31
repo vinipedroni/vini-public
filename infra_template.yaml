@@ -357,7 +357,7 @@ Resources:
 
   # Service
   IngestionECSService:
-    Type: AWS::ECS::Service
+    Type: AWS::ECS::Task
     DependsOn: 
     - CodeBuildIngestionStart
     - CloudFrontDistribution
@@ -366,7 +366,6 @@ Resources:
       Cluster: !Ref ECSCluster
       TaskDefinition: !Ref IngTaskDefinition
       LaunchType: FARGATE
-      DesiredCount: 1
       NetworkConfiguration:
         AwsVpcConfiguration:
           AssignPublicIp: ENABLED
@@ -521,3 +520,4 @@ Outputs:
   InferenceUIURL:
     Value: !GetAtt CloudFrontDistribution.DomainName
     Description: Domain name of the CloudFront distribution
+

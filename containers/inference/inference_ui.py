@@ -243,57 +243,33 @@ if upload_file is not None:
                             data=body,
                             headers=headers)
     results = response.json()
-    print(results)
-    
-    closest_match_1 = results['hits']['hits'][0]['_source']['metadata']
-    closest_match_2 = results['hits']['hits'][1]['_source']['metadata']
-    closest_match_3 = results['hits']['hits'][2]['_source']['metadata']
-    s3_location_1 = results['hits']['hits'][0]['_source']['metadata']['s3_location']
-    s3_location_2 = results['hits']['hits'][1]['_source']['metadata']['s3_location']
-    s3_location_3 = results['hits']['hits'][2]['_source']['metadata']['s3_location']
+    num_results = len(results['hits']['hits'])
+    columns = st.columns(num_results + 1)
 
-    closest_match_1 = str(closest_match_1)
-    closest_match_2 = str(closest_match_2)
-    closest_match_3 = str(closest_match_3)
+    metadata_strings = []
 
-    score_1 = results['hits']['hits'][0]['_score']
-    score_2 = results['hits']['hits'][1]['_score']
-    score_3 = results['hits']['hits'][2]['_score']
-    st.sidebar.write('**Here are the metadata for the closest matches we have in our DataStore**')
-    st.sidebar.write('Metadata from the Current Image Created by Claude 3: ')
-    st.sidebar.write(text)
-    st.sidebar.write('Metadata for Image 1: ')
-    st.sidebar.write(results['hits']['hits'][0]['_source']['metadata'])
-    st.sidebar.write('Metadata for Image 2: ')
-    st.sidebar.write(results['hits']['hits'][1]['_source']['metadata'])
-    st.sidebar.write('Metadata for Image 3: ')
-    st.sidebar.write(results['hits']['hits'][2]['_source']['metadata'])
-    st.write('**Here are the results I was able to find from the Vector DB Search. These are the closest matches we have in our DataStore**')
-    col1, col2, col3, col4 = st.columns(4)
-
-    with col1:
+    with columns[0]:
         st.write('This is the Image that has been provided: ')
         current_img = Image.open(BytesIO(file_bytes))
         st.image(file_bytes)
-    with col2:
-        url = 'https://' + cf_url + '/' + s3_location_1
-        response = requests.get(url)
-        img = Image.open(BytesIO(response.content))
-        st.write('This is the Match Accuracy for Image 1: ', str(score_1))
-        st.image(img)
-    with col3: 
-        url = 'https://' + cf_url + '/' + s3_location_2
-        response = requests.get(url)
-        img = Image.open(BytesIO(response.content))
-        st.write('This is the Match Accuracy for Image 2: ', str(score_2))
-        st.image(img)
-    with col4:
-        url = 'https://' + cf_url + '/' + s3_location_3
-        response = requests.get(url)
-        img = Image.open(BytesIO(response.content))
-        st.write('This is the Match Accuracy for Image 3: ', str(score_3))
-        st.image(img)
-    prompt_full = '<current>' + json_string + '</current>' + '<dataset>' + closest_match_1 + closest_match_2 + closest_match_3 + '</dataset> Instruction; You are calculating the estimated repair cost based on previous data of similar car damages. Take the repair cost of the data set provide within <dataset> and calculate the average cost among all example data sets. Explain the math, but you must be brief, the answer cannot have more than 3 sentences.' 
+
+    for i, hit in enumerate(results['hits']['hits']):
+        metadata = hit['_source']['metadata']
+        s3_location = metadata['s3_location']
+        score = hit['_score']
+        metadata_string = json.dumps(metadata, indent=2)  # Convert metadata to JSON string
+        metadata_strings.append(metadata_string)  # Append the metadata string to the list
+        with columns[i + 1]:
+            url = 'https://' + cf_url + '/' + s3_location
+            response = requests.get(url)
+            img = Image.open(BytesIO(response.content))
+            st.write(f'This is the Match Accuracy for Image {i + 1}: {score}')
+            st.sidebar.write(f'This is the metadata for the closest match we have in our DataStore for Image {i + 1}')
+            st.sidebar.code(json.dumps(metadata, indent=2)) 
+
+            st.image(img)
+    combined_metadata_string = '\n'.join(metadata_strings)
+    prompt_full = '<current>' + json_string + '</current>' + '<dataset>' + combined_metadata_string + '</dataset> Instruction; You are calculating the estimated repair cost based on previous data of similar car damages. Take the repair cost of the data set provide within <dataset> and calculate the average cost among all example data sets. Explain the math, but you must be brief, the answer cannot have more than 3 sentences.' 
     invoke_body = {
     'anthropic_version': 'bedrock-2023-05-31',
     'max_tokens': 1000,
