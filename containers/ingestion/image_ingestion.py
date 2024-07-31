@@ -9,9 +9,14 @@ import os
 from datetime import datetime
 import concurrent.futures
 
-# Specify the role to assume and the AWS Region
-#region = 'us-east-1'
+from botocore.config import Config
 
+config = Config(
+   retries = {
+      'max_attempts': 1,
+      'mode': 'standard'
+   }
+)
 # Create a Boto3 STS client
 sts_client = boto3.client('sts')
 
@@ -53,7 +58,7 @@ awsauth = AWS4Auth(credentials.access_key, credentials.secret_key,
 
 #Set MultiModal Embeddings, bedrock client and S3 client
 model_name = "amazon.titan-embed-image-v1"
-bedrock = session.client("bedrock-runtime")
+bedrock = session.client("bedrock-runtime", config=config)
 s3 = session.client('s3')
 
 #Define the JSON Creation metadata instruction for each car Make/Model
@@ -72,7 +77,7 @@ you need to estimate the repair cost to populate within the output and you need 
 you also need to provide a damage_description which is short and less than 10 words. Just provide the json output in the response, do not explain the reasoning. \
 For testing purposes assume the image is from a Nissan Altima in the state of Florida.'
 
-bedrock_client = session.client('bedrock-runtime')
+bedrock_client = session.client('bedrock-runtime', config=config)
 
 
 #Define function that will Create the JSON Metadata for the given damage image

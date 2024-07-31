@@ -11,7 +11,14 @@ from io import BytesIO
 st.set_page_config(page_title="Damage Repair Cost Estimator") #HTML title
 st.title("Damage Repair Cost Estimator") #page title
 
+from botocore.config import Config
 
+config = Config(
+   retries = {
+      'max_attempts': 1,
+      'mode': 'standard'
+   }
+)
 
 # Create a Boto3 STS client
 sts_client = boto3.client('sts')
@@ -124,7 +131,7 @@ if upload_file is not None:
     base64_bytes = json_string.encode('utf-8')
     base64_string = base64.b64encode(base64_bytes).decode('utf-8')
 #created bedrock client
-    bedrock = boto3.client('bedrock-runtime') 
+    bedrock = boto3.client('bedrock-runtime', config=config) 
 
 #Here we create the instruction that will be sent to Claude 3 to improve upon the metadata created just by the user Options. We will create a damage description
     json_model = '<model>\
@@ -166,7 +173,7 @@ if upload_file is not None:
     ]
     }
     invoke_body = json.dumps(invoke_body).encode('utf-8')
-    client = session.client('bedrock-runtime')
+    client = session.client('bedrock-runtime', config=config)
 #here is where we invoke Claude and take its response.
     response = client.invoke_model(
         body=invoke_body,
