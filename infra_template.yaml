@@ -357,12 +357,11 @@ Resources:
 
   # Service
   IngestionECSService:
-    Type: AWS::ECS::Task
+    Type: AWS::ECS::TaskSet
     DependsOn: 
     - CodeBuildIngestionStart
     - CloudFrontDistribution
     Properties:
-      ServiceName: ingestion-service
       Cluster: !Ref ECSCluster
       TaskDefinition: !Ref IngTaskDefinition
       LaunchType: FARGATE
