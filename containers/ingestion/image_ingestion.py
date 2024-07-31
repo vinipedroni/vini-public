@@ -272,7 +272,7 @@ def ingest_image(client, filename, folder_path, os_index_name, os_host, instruct
 
                 body_output = body.read()
 
-                endpoint = subprocess.check_output(["aws", "opensearchserverless", "batch-get-collection", "--names", "mycollection"]).decode().split('"')[7]
+                #endpoint = subprocess.check_output(["aws", "opensearchserverless", "batch-get-collection", "--names", "mycollection"]).decode().split('"')[7]
                 data['s3_location'] = key
                 metadata = data
 

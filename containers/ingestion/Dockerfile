@@ -28,6 +28,8 @@ RUN cat image_ingestion.py
 
 RUN ls -la
 RUN ls -la civic
+RUN ls -la altima
+RUN ls -la corolla
 RUN chown -R appuser /home/appuser/app
 
 USER appuser
