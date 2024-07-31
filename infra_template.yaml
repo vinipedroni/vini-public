@@ -376,54 +376,6 @@ Resources:
             - !Ref PublicSubnet1
             - !Ref PublicSubnet2
 
-  IAMRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: RepairCostRole
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
-            Action: "sts:AssumeRole"
-      Policies:
-        - PolicyName: BedRockAccess
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - "bedrock:*"
-                  - "bedrock-runtime:*"
-                Resource: "*"
-        - PolicyName: OpenSearchServerlessAccess
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - "opensearchserverless:*"
-                  - "aoss:*"
-                Resource: "*"
-        - PolicyName: S3Access
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - "s3:*"
-                Resource: "*"
-        - PolicyName: SSMAccess
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - "ssm:*"
-                Resource: "*"
-      MaxSessionDuration: 43200
-
   NetworkPolicy:
     Type: AWS::OpenSearchServerless::SecurityPolicy
     Properties: 
@@ -565,26 +517,7 @@ Resources:
       Type: String
       Value: !GetAtt CloudFrontDistribution.DomainName
 
-  RoleArnParameter:
-    Type: AWS::SSM::Parameter
-    Properties: 
-      Name: "/car-repair/role-arn"
-      Type: String
-      Value: !GetAtt IAMRole.Arn
-
-
-
 Outputs:
-  CollectionEndpoint:
-    Value: !GetAtt Collection.CollectionEndpoint
   InferenceUIURL:
     Value: !GetAtt CloudFrontDistribution.DomainName
     Description: Domain name of the CloudFront distribution
-  BucketName:
-    Value: !Ref RepairCostBucket
-    Description: Name of the S3 bucket
-  IAMRoleARN:
-    Description: The ARN of the IAM role
-    Value: !GetAtt IAMRole.Arn
-    Export:
-      Name: IAMRoleARN
