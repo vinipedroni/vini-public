@@ -13,8 +13,8 @@ from botocore.config import Config
 
 config = Config(
    retries = {
-      'max_attempts': 1,
-      'mode': 'standard'
+      'max_attempts': 10,
+      'mode': 'adaptive'
    }
 )
 # Create a Boto3 STS client
