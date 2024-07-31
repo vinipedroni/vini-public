@@ -70,8 +70,13 @@ selected_damage_area = st.sidebar.multiselect('Damage Area. Select as many parts
 selected_damage_type = st.sidebar.multiselect('Damage Type. Select as many damage types as possible that can describe the damage: ', damage_type_options)
 selected_damage_sev = st.sidebar.selectbox('Damage Severity', damage_sev_option)
 
-#image uploader
-upload_file = st.sidebar.file_uploader("Here you will upload your damage image")
+
+# session state is valid through out the lifecycle of the app until the whole page is reloaded. we initialize the key to 0 here
+if "uploader_key" not in st.session_state:
+    st.session_state.uploader_key = 0
+
+#dynamically generate the key for the uploaded file
+upload_file = st.sidebar.file_uploader("here you will upload your damage image", key=f"uploader_{st.session_state.uploader_key}")
 
 def response_streaming(invoke_body):
     st.write('**Streaming the Final Calculation**')
@@ -97,8 +102,9 @@ def response_streaming(invoke_body):
                 yield chunk['delta']['text']
 
 
-#Once image is uploaded start the analysis
 if upload_file is not None:
+    #once the file is consumed, first time then update the uploader_key, so that this piece of code will not be triggered again.
+    st.session_state.uploader_key += 1
     file_details = {"filename":upload_file.name, "filetype":upload_file.type, "filesize":upload_file.size}
 #Reads the file and encodes it
     file_bytes = upload_file.read()
