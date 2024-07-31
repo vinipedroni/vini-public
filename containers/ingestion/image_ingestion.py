@@ -298,7 +298,7 @@ def ingest_image(client, filename, folder_path, os_index_name, os_host, instruct
 def image_ingestion(folder_path, os_index_name, os_host, instruction):
     counter = 0
     client = get_OpenSearch_client(os_host, os_index_name)
-    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
         futures = []
 
         for filename in os.listdir(folder_path):
