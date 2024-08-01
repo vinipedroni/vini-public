@@ -118,6 +118,7 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
         - arn:aws:iam::aws:policy/AWSCodeBuildAdminAccess
+        - arn:aws:iam::aws:policy/AmazonECS_FullAccess
 
 # VPC
   VPC:
@@ -355,25 +356,6 @@ Resources:
         ContainerPort: 8501
         TargetGroupArn: !Ref InferenceALBTargetGroup
 
-  # Service
-  IngestionECSService:
-    Type: AWS::ECS::TaskSet
-    DependsOn: 
-    - CodeBuildIngestionStart
-    - CloudFrontDistribution
-    Properties:
-      Cluster: !Ref ECSCluster
-      TaskDefinition: !Ref IngTaskDefinition
-      LaunchType: FARGATE
-      NetworkConfiguration:
-        AwsVpcConfiguration:
-          AssignPublicIp: ENABLED
-          SecurityGroups:
-            - !Ref SecurityGroup
-          Subnets:
-            - !Ref PublicSubnet1
-            - !Ref PublicSubnet2
-
   NetworkPolicy:
     Type: AWS::OpenSearchServerless::SecurityPolicy
     Properties: 
@@ -456,7 +438,7 @@ Resources:
             - PATCH
             - OPTIONS
           CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
-          OriginRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac
+          OriginRequestPolicyId: 216adef6-5c7f-47e4-b989-5492eafa07d3
           TargetOriginId: InferenceContainerOrigin
           ViewerProtocolPolicy: redirect-to-https
         Enabled: true
@@ -492,6 +474,65 @@ Resources:
             MinTTL: 0
             DefaultTTL: 300
             MaxTTL: 1200
+# Custom Resource to run CodeBuild project
+  RunIngestionECSTask:
+    Type: AWS::CloudFormation::CustomResource
+    DependsOn: IngestionCodeBuildProject
+    Properties:
+      ServiceToken: !GetAtt RunIngestionTaskLambda.Arn
+      ProjectName: !Ref IngTaskDefinition
+
+  # Lambda Function to run CodeBuild project
+  RunIngestionTaskLambda:
+    Type: AWS::Lambda::Function
+    DependsOn:
+    - Collection
+    - ECSCluster
+    Properties:
+      Code:
+        ZipFile: |
+          import boto3
+          import cfnresponse
+          import os
+          ecs_client = boto3.client('ecs')
+
+          def lambda_handler(event, context):
+              try:
+                  response = ecs_client.run_task(
+                    cluster=os.environ['CLUSTER_NAME'],
+                    taskDefinition=os.environ['TASK_DEFINITION_ARN'],
+                    launchType='FARGATE',
+                    networkConfiguration={
+                      'awsvpcConfiguration': {
+                          'subnets': [
+                              os.environ['SUBNET_ID_1'],
+                              os.environ['SUBNET_ID_2']
+                          ],
+                          'securityGroups': [
+                            os.environ['SECURITY_GROUP_ID']
+                          ],
+                          'assignPublicIp': 'ENABLED'
+                        }
+                    }
+                  )
+                  task_id = response['tasks'][0]['attachments'][0]['id']
+                  print(response)
+                  cfnresponse.send(event, context, cfnresponse.SUCCESS, {'TaskId': task_id})
+              except Exception as e:
+                  print(e)
+                  raise e
+                  cfnresponse.send(event, context, cfnresponse.FAILED, {'Reason': str(e)})
+      Handler: index.lambda_handler
+      Runtime: python3.12
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Timeout: 300
+      Environment:
+        Variables:
+          CLUSTER_NAME: !Ref ECSCluster
+          TASK_DEFINITION_ARN: !Ref IngTaskDefinition
+          SUBNET_ID_1: !Ref PublicSubnet1
+          SUBNET_ID_2: !Ref PublicSubnet2
+          SECURITY_GROUP_ID: !GetAtt SecurityGroup.GroupId
 
 
   BucketNameParameter:
