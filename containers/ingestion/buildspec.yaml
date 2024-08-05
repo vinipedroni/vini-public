@@ -15,7 +15,7 @@ phases:
       - echo $AWS_DEFAULT_REGION and $AWS_ACCOUNT_ID
       - aws sts get-caller-identity --query "Account" --output text
       - AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
-      - IMAGE_REPO_NAME='my-ecr-repo'
+      - IMAGE_REPO_NAME='damage-repo'
       - IMAGE_TAG='ingestion'
       - echo $AWS_DEFAULT_REGION and $AWS_ACCOUNT_ID
       - echo Logging in to Amazon ECR...
