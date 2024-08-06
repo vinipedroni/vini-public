@@ -7,11 +7,41 @@ Resources:
   ECRRepository:
     Type: AWS::ECR::Repository
     Properties:
-      RepositoryName: my-ecr-repo
+      RepositoryName: damage-repo
+
+ #CodeBuild IAM Policy
+  CodeBuildProjectPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: CodeBuildProjectPolicy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - ecr:GetAuthorizationToken
+              - ecr:BatchCheckLayerAvailability
+              - ecr:GetDownloadUrlForLayer
+              - ecr:GetRepositoryPolicy
+              - ecr:DescribeImages
+              - ecr:BatchGetImage
+              - ecr:InitiateLayerUpload
+              - ecr:UploadLayerPart
+              - ecr:CompleteLayerUpload
+              - ecr:PutImage
+              - ecr:SetRepositoryPolicy
+            Resource: "*"
+          - Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: "*"
 
   # CodeBuild Project Role
   CodeBuildRole:
     Type: AWS::IAM::Role
+    DependsOn: CodeBuildProjectPolicy
     Properties:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
@@ -21,9 +51,7 @@ Resources:
               Service: codebuild.amazonaws.com
             Action: 'sts:AssumeRole'
       ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser
-        - arn:aws:iam::aws:policy/AWSCodeBuildAdminAccess
-        - arn:aws:iam::aws:policy/AdministratorAccess
+        - !Ref CodeBuildProjectPolicy
 
   # CodeBuild Project      
   IngestionCodeBuildProject:
@@ -104,6 +132,33 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Timeout: 300
 
+#Lambda Role IAM Policy
+  LambdaRolePolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: LambdaRolePolicy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - codebuild:*
+            Resource:
+              - !GetAtt IngestionCodeBuildProject.Arn
+              - !GetAtt InferenceCodeBuildProject.Arn
+          - Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: "*"
+          - Effect: Allow
+            Action:
+              - ecs:*
+              - iam:PassRole
+            Resource: "*"
+
+
   # IAM Role for Lambda Function
   LambdaExecutionRole:
     Type: AWS::IAM::Role
@@ -116,9 +171,7 @@ Resources:
               Service: lambda.amazonaws.com
             Action: 'sts:AssumeRole'
       ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-        - arn:aws:iam::aws:policy/AWSCodeBuildAdminAccess
-        - arn:aws:iam::aws:policy/AmazonECS_FullAccess
+        - !Ref LambdaRolePolicy
 
 # VPC
   VPC:
@@ -130,7 +183,7 @@ Resources:
       InstanceTenancy: default
       Tags:
         - Key: Name
-          Value: my-vpc
+          Value: damage-vpc
 
   # Internet Gateway
   InternetGateway:
@@ -204,7 +257,7 @@ Resources:
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties:
-      ClusterName: my-ecs-cluster
+      ClusterName: damage-ecs-cluster
 
   # Task Definition
   InfTaskDefinition:
@@ -217,7 +270,7 @@ Resources:
         ExecutionRoleArn: !Ref TaskExecutionRole
         ContainerDefinitions:
           - Name: repair-cost-container
-            Image: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/my-ecr-repo:inference
+            Image: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/damage-repo:inference
             PortMappings:
               - ContainerPort: 8501
             LogConfiguration:
@@ -284,7 +337,7 @@ Resources:
         ExecutionRoleArn: !Ref TaskExecutionRole
         ContainerDefinitions:
           - Name: repair-cost-container
-            Image: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/my-ecr-repo:ingestion
+            Image: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/damage-repo:ingestion
             PortMappings:
               - ContainerPort: 8501
             LogConfiguration:
@@ -297,7 +350,29 @@ Resources:
           - FARGATE
         NetworkMode: awsvpc
 
-
+  ECSTasksPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: task-execution-policy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - aoss:*
+              - ecs:*
+              - ecr:*
+              - s3:*
+              - bedrock:*
+              - ssm:*
+            Resource:
+              - '*'
+          - Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: "*"
   TaskRole:
     Type: AWS::IAM::Role
     Properties:
@@ -309,7 +384,7 @@ Resources:
               Service: ecs-tasks.amazonaws.com
             Action: "sts:AssumeRole"
       ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AdministratorAccess
+        - !Ref ECSTasksPolicy
 
   TaskExecutionRole:
     Type: AWS::IAM::Role
@@ -322,7 +397,9 @@ Resources:
               Service: ecs-tasks.amazonaws.com
             Action: "sts:AssumeRole"
       ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AdministratorAccess
+        - !Ref ECSTasksPolicy
+
+
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
