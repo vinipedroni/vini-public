@@ -43,7 +43,7 @@ Choose from one of the following deployment regions, right now this solution can
 CloudFormation Deployments
 | Region | CloudFormation Link |
 | :---: | ---: |
-| US-EAST-1 | [![Open In CloudFormation](https://docs.aws.amazon.com/images/solutions/latest/serverless-image-handler/images/view-template.png)](https://s3.us-east-1.amazonaws.com/pedroni-us-east-1/new_build_proj.yml)|
+| US-EAST-1 | [![Open In CloudFormation](https://docs.aws.amazon.com/images/solutions/latest/serverless-image-handler/images/view-template.png)](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/quickcreate?templateURL=https://s3.us-east-1.amazonaws.com/pedroni-us-east-1/new_build_proj.yml)|
 
 
 ## Step 3: Verification of Deployment
