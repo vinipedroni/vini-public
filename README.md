@@ -8,7 +8,9 @@ The proposal of this solution is to offer a new method levearging GenAI and Mult
 
 # Solution Details:
 
-The solution involves two important parts, the ingestion and the inference. 
+The solution involves two important parts, the ingestion and the inference. Below is the architecture:
+
+![Sol Arch](/static_assets/damage_repair_sol.png)  
 
 Data Ingestion Flow Steps:
 
