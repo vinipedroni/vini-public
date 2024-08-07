@@ -68,11 +68,11 @@ Go to the CloudFormation stack and on the outputs tab, look for the "InferenceUI
 - For Damage Type, select: Scratch
 - For Damage Severity, select: moderate
 
-![Test1_Param](Test1_Parameters.png)
+![Test1_Param](/static_assets/Test1_Parameters.png)
 
 2. This image is in the Vector DB, so there should be a match close to 100% accuracy.
 
-![Test1_Results](Test1_Results.png)
+![Test1_Results](/static_assets/Test1_Results.png)
 
 In this example, we can see it found the closest 3 matches, and by order of accuracy, they are 0.99950504, 0.92682207, and 0.92027134.
 
@@ -80,7 +80,7 @@ In this example, we can see it found the closest 3 matches, and by order of accu
 
 4. Now let's see how changing the options from the user changes the accuracy of the results. Let's modify the Make and Model to Toyota Corolla, as shown in the image below:
 
-![Test1_Results](Test1_less_accurate.png)
+![Test1_Results](/static_assets/Test1_less_accurate.png)
 
 5. Our results went from 0.9995 to 0.9978193. We still have a high match because it's the same image, but just changing a small parameter from the UI decreased the vector match. This means that the more accurate we can be on our metadata, the closest match we will find, and the more accurate the damage image will be that matches the make, model, and other parameters from the user.
 
@@ -96,11 +96,11 @@ In this example, we can see it found the closest 3 matches, and by order of accu
 - For Damage Type, select: Broken
 - For Damage Severity, select: severe
 
-![Test2_Param](Test2_Parameters.png)
+![Test2_Param](/static_assets/Test2_Parameters.png)
 
 2. This image is not in the Vector DB, so we should be getting a high match, due to other similar damages in the DB, however, it will be around the 0.90 accuracy, as shown below:
 
-![Test2_Results](Test2_Results.png)
+![Test2_Results](/static_assets/Test2_Results.png)
 
 3. The results we got are 0.928969, 0.92857015, 0.92395175, and the images in these results are quite close to the real damage we are assessing.
 
@@ -109,7 +109,7 @@ In this example, we can see it found the closest 3 matches, and by order of accu
 - Damage Type: Dent, Scratch and Fender Bender
 - Damage Severity: severe
 
-![Test2_Results](Test2_more_accurate.png)
+![Test2_Results](/static_assets/Test2_more_accurate.png)
 
 5. The new results are 0.92993426, 0.92886454, 0.92356765. The accuracy increased on all 3 matches because the metadata using the new parameters is closest to the ones that were stored in the ingestion process, and therefore the vector is a closer match.
 
