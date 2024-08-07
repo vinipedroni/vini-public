@@ -38,8 +38,13 @@ Go To the Bedrock console in one of the Bedrock supported regions and enable at 
 
 ## Step 2: Run CloudFormation template
 
-In this repository, download and run the infra_template.yaml.
-This is a Cloudformation template which will deploy all the resource required to run this solution.
+Choose from one of the following deployment regions, right now this solution can only run on regions where bedrock is supported.
+
+CloudFormation Deployments
+| Region | CloudFormation Link |
+| :---: | ---: |
+| US-EAST-1 | [![Open In CloudFormation](https://docs.aws.amazon.com/images/solutions/latest/serverless-image-handler/images/view-template.png)](https://s3.us-east-1.amazonaws.com/pedroni-us-east-1/new_build_proj.yml)|
+
 
 ## Step 3: Verification of Deployment
 
