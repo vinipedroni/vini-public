@@ -108,7 +108,8 @@ def response_streaming(invoke_body):
             # If a text_delta is detected, it streams the text to the front end.
             if chunk['delta']['type'] == 'text_delta':
                 # using a generator object to stream the text to the front end.
-                yield chunk['delta']['text']
+                #yield chunk['delta']['text']
+                yield chunk['delta']['text'].replace("$", "\$")
 
 
 if upload_file is not None:
