@@ -36,6 +36,8 @@ Go To the Bedrock console in one of the Bedrock supported regions and enable at 
 - Amazon Titan Multimoal Embeddings
 - Anthropic Claude 3 Haiku
 
+In order to enable the mentioned models. You can follow the instructions provided [here](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html#model-access-modify)
+
 ## Step 2: Run CloudFormation template
 
 Choose from one of the following deployment regions, right now this solution can only run on regions where bedrock is supported.
