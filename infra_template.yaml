@@ -637,4 +637,9 @@ Outputs:
   InferenceUIURL:
     Value: !GetAtt CloudFrontDistribution.DomainName
     Description: Domain name of the CloudFront distribution
-
+  ECRRepository:
+    Value: !Ref ECRRepository
+    Description: Domain name of the CloudFront distribution
+  S3Bucket:
+    Value: !Ref RepairCostBucket
+    Description: Domain name of the CloudFront distribution

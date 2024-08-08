@@ -6,6 +6,11 @@ There are multiple market solution that leverage Machine Learning processes targ
 
 The proposal of this solution is to offer a new method levearging GenAI and MultiModal Vector Databases.
 
+# Important Information about this solution:
+
+1. The images contained on this solution are all from open source data sets that can be found [here](https://www.kaggle.com/datasets/anujms/car-damage-detection).
+2. The data set used for this solution, has been broken down to specific cars makes and models, even thought the images are not of those specific models. The idea was to create separate metdata to demonstrate the solution and the use case.
+
 # Solution Details:
 
 The solution involves two important parts, the ingestion and the inference. Below is the architecture:
@@ -114,3 +119,15 @@ In this example, we can see it found the closest 3 matches, and by order of accu
 5. The new results are 0.92886454, 0.9279658, 0.9271643. The accuracy changed on all 3 matches because the metadata using the new parameters influences the vector matches, this means that any modification on the input will influence the results.
 
 6. Under the image upload button, there will be the JSON metadata created by Claude for the metadata stored in OpenSearch alongside the vector. We can use that to compare how the images were ingested and how close the metadatas are.
+
+# Cleanup Process:
+
+If you would like to cleanup this solution from your AWS Account follow the steps below:
+
+## Step 1: Open your CloudFormation Console, click on the stack that was deployed and go to Outputs.
+
+## Step 2: Click on the S3 bucket, and once on the S3 console, make sure the bucket is empty.
+
+## Step 3: Click on the ECR Repository and remove all images store at the repo.
+
+## Step 4: Start the deletion of the CloudFormation Stack. This is going to remove all the other resources from the AWS Account.
