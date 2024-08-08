@@ -124,10 +124,14 @@ In this example, we can see it found the closest 3 matches, and by order of accu
 
 If you would like to cleanup this solution from your AWS Account follow the steps below:
 
-## Step 1: Open your CloudFormation Console, click on the stack that was deployed and go to Outputs.
+## Step 1: 
+Open your CloudFormation Console, click on the stack that was deployed and go to Outputs.
 
-## Step 2: Click on the S3 bucket, and once on the S3 console, make sure the bucket is empty.
+## Step 2: 
+Click on the S3 bucket, and once on the S3 console, make sure the bucket is empty.
 
-## Step 3: Click on the ECR Repository and remove all images store at the repo.
+## Step 3: 
+Click on the ECR Repository and remove all images store at the repo.
 
-## Step 4: Start the deletion of the CloudFormation Stack. This is going to remove all the other resources from the AWS Account.
+## Step 4: 
+Start the deletion of the CloudFormation Stack. This is going to remove all the other resources from the AWS Account.
