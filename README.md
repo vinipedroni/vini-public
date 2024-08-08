@@ -102,7 +102,7 @@ In this example, we can see it found the closest 3 matches, and by order of accu
 
 ![Test2_Results](/static_assets/Test2_Results.png)
 
-3. The results we got are 0.928969, 0.92857015, 0.92395175, and the images in these results are quite close to the real damage we are assessing.
+3. The results we got are 0.9286898, 0.92798316, 0.92725295, and the images in these results are close to the real damage we are assessing.
 
 4. Now let's play around with the parameters. Refresh your page, choose the same make and model, and the following parameters:
 - Damage Area: Front Right and Passenger Side
@@ -111,6 +111,6 @@ In this example, we can see it found the closest 3 matches, and by order of accu
 
 ![Test2_Results](/static_assets/Test2_more_accurate.png)
 
-5. The new results are 0.92993426, 0.92886454, 0.92356765. The accuracy increased on all 3 matches because the metadata using the new parameters is closest to the ones that were stored in the ingestion process, and therefore the vector is a closer match.
+5. The new results are 0.92886454, 0.9279658, 0.9271643. The accuracy changed on all 3 matches because the metadata using the new parameters influences the vector matches, this means that any modification on the input will influence the results.
 
 6. Under the image upload button, there will be the JSON metadata created by Claude for the metadata stored in OpenSearch alongside the vector. We can use that to compare how the images were ingested and how close the metadatas are.
