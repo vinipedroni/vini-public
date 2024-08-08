@@ -36,7 +36,7 @@ Go To the Bedrock console in one of the Bedrock supported regions and enable at 
 - Amazon Titan Multimoal Embeddings
 - Anthropic Claude 3 Haiku
 
-In order to enable the mentioned models. You can follow the instructions provided [here](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html#model-access-modify)
+In order to enable the mentioned models. You can follow the instructions provided [here](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html#model-access-modify).
 
 ## Step 2: Run CloudFormation template
 
@@ -50,13 +50,9 @@ CloudFormation Deployments
 | US-WEST-2 | [![Open In CloudFormation](/static_assets/view-template.png)](https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/quickcreate?templateURL=https://s3.us-east-1.amazonaws.com/pedroni-us-east-1/new_build_proj.yml)|
 | EU-CENTRAL-1 | [![Open In CloudFormation](/static_assets/view-template.png)](https://eu-central-1.console.aws.amazon.com/cloudformation/home?region=eu-central-1#/stacks/quickcreate?templateURL=https://s3.us-east-1.amazonaws.com/pedroni-us-east-1/new_build_proj.yml)|
 
-## Step 3: Verification of Deployment
+## Step 3: Access Inference Code.
 
-Once CloudFormation turns to Create_Complete status, it means all infrastructure was deployed, however the ingestion code might still be running, in order to verify that go to the ecs task for ingestion and check it's cpu/mem usage.
-
-## Step 4: Access Inference Code.
-
-Go to the CloudFormation stack and on the outputs tab, look for the "InferenceUIURL" key, you should see a cloudfront distribution link, click there should take you to the inference ui.
+Once the CloudFormation stack has finished deploying, go to the outputs tab, look for the "InferenceUIURL" key, you should see a cloudfront distribution link, click there should take you to the inference ui.
 
 ![CFN Outputs](/static_assets/cfn_output.png)
 
@@ -69,6 +65,7 @@ Go to the CloudFormation stack and on the outputs tab, look for the "InferenceUI
 - For Damage Area, select: Driver Side and Driver Side Door
 - For Damage Type, select: Scratch
 - For Damage Severity, select: moderate
+- For the "Number of matches", select 3 - You can change this, in this case using 3 to show the different matches.
 
 ![Test1_Param](/static_assets/Test1_Parameters.png)
 
@@ -76,7 +73,7 @@ Go to the CloudFormation stack and on the outputs tab, look for the "InferenceUI
 
 ![Test1_Results](/static_assets/Test1_Results.png)
 
-In this example, we can see it found the closest 3 matches, and by order of accuracy, they are 0.99950504, 0.92682207, and 0.92027134.
+In this example, we can see it found the closest 3 matches, and by order of accuracy, they are 0.99950504, 0.93129104, and 0.92037815.
 
 3. The 0.99 is the closest match that we found in the DB, and the only difference is that the ingested image has a slightly different metadata from what we created when we ran the inference.
 
@@ -84,7 +81,7 @@ In this example, we can see it found the closest 3 matches, and by order of accu
 
 ![Test1_Results](/static_assets/Test1_less_accurate.png)
 
-5. Our results went from 0.9995 to 0.9978193. We still have a high match because it's the same image, but just changing a small parameter from the UI decreased the vector match. This means that the more accurate we can be on our metadata, the closest match we will find, and the more accurate the damage image will be that matches the make, model, and other parameters from the user.
+5. Our results went from 0.99950504 to 0.99861217. We still have a high match because it's the same image, but just changing a small parameter from the UI decreased the vector match. This means that the more accurate we can be on our metadata, the closest match we will find, and the more accurate the damage image will be that matches the make, model, and other parameters from the user.
 
 6. Play around with the images in the 'test_dataset' folder, or even try some images from the data set we loaded into the Vector DB.
 
@@ -97,6 +94,8 @@ In this example, we can see it found the closest 3 matches, and by order of accu
 - For Damage Area, select: Rear Left and Hood
 - For Damage Type, select: Broken
 - For Damage Severity, select: severe
+- For the "Number of matches", select 3 - You can change this, in this case using 3 to show the different matches.
+
 
 ![Test2_Param](/static_assets/Test2_Parameters.png)
 
