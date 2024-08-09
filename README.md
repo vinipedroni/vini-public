@@ -61,7 +61,7 @@ Once the CloudFormation stack has finished deploying, go to the outputs tab, loo
 
 ![CFN Outputs](/static_assets/cfn_output.png)
 
-# Testing the Solution:
+## Step 4: Testing the Solution:
 
 In the repository, there is a "test_data_set" folder. This folder has random images which can be used for testing the solution. Follow the steps below in order to see the results in the UI.
 
@@ -78,10 +78,6 @@ In this example, image was loaded, and 3 matches were found.
 > [!NOTE] 
 > The "Match Accuracy" shown for each image is an indication of how close the vectors from our current image and the stored ones are. As metadata is changed the accuracy of the matches is going to change as well.
 
-!!!note
-    This is a note banner created using an admonition extension.
-!!!
-
 4. Now let's see how changing the options from the user changes the accuracy of the results.
 
 ![Test1_Results](/static_assets/test_example_2.png)
@@ -96,14 +92,10 @@ In this example, image was loaded, and 3 matches were found.
 
 If you would like to cleanup this solution from your AWS Account follow the steps below:
 
-## Step 1: 
-Open your CloudFormation Console, click on the stack that was deployed and go to Outputs.
+1. Open your CloudFormation Console, click on the stack that was deployed and go to Outputs. There you should see the name of your ECR Repository and the S3 Bucket Name.
 
-## Step 2: 
-Click on the S3 bucket, and once on the S3 console, make sure the bucket is empty.
+2. Go to the S3 console, find the bucket and delete all the content in the bucket. The bucket should be empty, otherwise the CloudFormation stack will fail to delete it.
 
-## Step 3: 
-Click on the ECR Repository and remove all images store at the repo.
+3. Go to the ECR console, fine the ecr repository and delete all images in this repository. The reposiroty should be empty, otherwise the CloudFormation stack will fail to delete it.
 
-## Step 4: 
-Start the deletion of the CloudFormation Stack. This is going to remove all the other resources from the AWS Account.
+4. Start the deletion of the CloudFormation Stack. This is going to remove all the other resources from the AWS Account.
