@@ -75,8 +75,12 @@ In this example, image was loaded, and 3 matches were found.
 
 3. In this test, 3 matches were found. As we can see from the images, they were close damages, and the solution used the metadata stored to calculate the average. 
 
-[!NOTE] 
-The "Match Accuracy" shown for each image is an indication of how close the vectors from our current image and the stored ones are. As metadata is changed the accuracy of the matches is going to change as well.
+> [!NOTE] 
+> The "Match Accuracy" shown for each image is an indication of how close the vectors from our current image and the stored ones are. As metadata is changed the accuracy of the matches is going to change as well.
+
+!!!note
+    This is a note banner created using an admonition extension.
+!!!
 
 4. Now let's see how changing the options from the user changes the accuracy of the results.
 
