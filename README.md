@@ -6,10 +6,13 @@ There are multiple market solution that leverage Machine Learning processes targ
 
 The proposal of this solution is to offer a new method levearging GenAI and MultiModal Vector Databases.
 
-# Important Information about this solution:
+# Important Information about this solution and Quick Demo:
 
 1. The images contained on this solution are all from open source data sets that can be found [here](https://www.kaggle.com/datasets/anujms/car-damage-detection).
 2. The data set used for this solution, has been broken down to specific cars makes and models, even thought the images are not of those specific models. The idea was to create separate metdata to demonstrate the solution and the use case.
+3. Below is a quick demo of how the user interacts with this solution:
+
+![Sol Arch](/static_assets/quick_demo_gif.gif)  
 
 # Solution Details:
 
