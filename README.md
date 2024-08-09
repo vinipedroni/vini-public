@@ -74,12 +74,12 @@ In the repository, there is a "test_data_set" folder. This folder has random ima
 In this example, image was loaded, and 3 matches were found. 
 
 3. In this test, 3 matches were found. As we can see from the images, they were close damages, and the solution used the metadata stored to calculate the average. 
-
-::alert[The "Match Accuracy" shown for each image is an indication of how close the vectors from our current image and the stored ones are. As metadata is changes the accuracy of the matches is going to change as well.]
+[!NOTE] 
+The "Match Accuracy" shown for each image is an indication of how close the vectors from our current image and the stored ones are. As metadata is changes the accuracy of the matches is going to change as well.
 
 4. Now let's see how changing the options from the user changes the accuracy of the results.
 
-![Test1_Results](/static_assets/Test1_example_2.png)
+![Test1_Results](/static_assets/test_example_2.png)
 
 5. As the image above shows, changing the parameters, but loading the same image, provided different results. The search matched with the same images but the accuracy is different. This indicates that the parameters chosen were closer to the metadata of the ingested images, thus influencing the vector created on the ingestion process.
 
