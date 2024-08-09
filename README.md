@@ -63,62 +63,29 @@ Once the CloudFormation stack has finished deploying, go to the outputs tab, loo
 
 # Testing the Solution:
 
-## Test 1: Images which have been vectorized and are stored in OpenSearch
+In the repository, there is a "test_data_set" folder. This folder has random images which can be used for testing the solution. Follow the steps below in order to see the results in the UI.
 
-1. In the UI, take the following actions and load the 'civic_test_1.jpeg' image:
-- For Make and Model, select: Honda/Civic
-- For Damage Area, select: Driver Side and Driver Side Door
-- For Damage Type, select: Scratch
-- For Damage Severity, select: moderate
-- For the "Number of matches", select 3 - You can change this, in this case using 3 to show the different matches.
+1. In the UI, take the following actions and load the any of the images from the test data set:
 
-![Test1_Param](/static_assets/Test1_Parameters.png)
+2. On the left side of the UI, choose the parameters, Make, model, area of the damage, type of damage, the severity and how many matches you want to find from the Vector Database.
 
-2. This image is in the Vector DB, so there should be a match close to 100% accuracy.
+![Test1_Results](/static_assets/test_example.png)
 
-![Test1_Results](/static_assets/Test1_Results.png)
+In this example, image was loaded, and 3 matches were found. 
 
-In this example, we can see it found the closest 3 matches, and by order of accuracy, they are 0.99950504, 0.93129104, and 0.92037815.
+3. In this test, 3 matches were found. As we can see from the images, they were close damages, and the solution used the metadata stored to calculate the average. 
 
-3. The 0.99 is the closest match that we found in the DB, and the only difference is that the ingested image has a slightly different metadata from what we created when we ran the inference.
+::alert[The "Match Accuracy" shown for each image is an indication of how close the vectors from our current image and the stored ones are. As metadata is changes the accuracy of the matches is going to change as well.]
 
-4. Now let's see how changing the options from the user changes the accuracy of the results. Let's modify the Make and Model to Toyota Corolla, as shown in the image below:
+4. Now let's see how changing the options from the user changes the accuracy of the results.
 
-![Test1_Results](/static_assets/Test1_less_accurate.png)
+![Test1_Results](/static_assets/Test1_example_2.png)
 
-5. Our results went from 0.99950504 to 0.99861217. We still have a high match because it's the same image, but just changing a small parameter from the UI decreased the vector match. This means that the more accurate we can be on our metadata, the closest match we will find, and the more accurate the damage image will be that matches the make, model, and other parameters from the user.
+5. As the image above shows, changing the parameters, but loading the same image, provided different results. The search matched with the same images but the accuracy is different. This indicates that the parameters chosen were closer to the metadata of the ingested images, thus influencing the vector created on the ingestion process.
 
-6. Play around with the images in the 'test_dataset' folder, or even try some images from the data set we loaded into the Vector DB.
+6. Play around with the images in the 'test_data_set' folder, or even try some images from the data set we loaded into the Vector DB.
 
 7. Under the image upload button, there will be the JSON metadata created by Claude for the metadata stored in OpenSearch alongside the vector. We can use that to compare how the images were ingested and how close the metadatas are.
-
-## Test 2: Images which have NOT been vectorized and are stored in OpenSearch
-
-1. In the UI, take the following actions and load the 'corolla_blue_1.png' image:
-- For Make and Model, select: Toyota/Corolla
-- For Damage Area, select: Rear Left and Hood
-- For Damage Type, select: Broken
-- For Damage Severity, select: severe
-- For the "Number of matches", select 3 - You can change this, in this case using 3 to show the different matches.
-
-![Test2_Param](/static_assets/Test2_Parameters.png)
-
-2. This image is not in the Vector DB, so we should be getting a high match, due to other similar damages in the DB, however, it will be around the 0.90 accuracy, as shown below:
-
-![Test2_Results](/static_assets/Test2_Results.png)
-
-3. The results we got are 0.9286898, 0.92798316, 0.92725295, and the images in these results are close to the real damage we are assessing.
-
-4. Now let's play around with the parameters. Refresh your page, choose the same make and model, and the following parameters:
-- Damage Area: Front Right and Passenger Side
-- Damage Type: Dent, Scratch and Fender Bender
-- Damage Severity: severe
-
-![Test2_Results](/static_assets/Test2_more_accurate.png)
-
-5. The new results are 0.92886454, 0.9279658, 0.9271643. The accuracy changed on all 3 matches because the metadata using the new parameters influences the vector matches, this means that any modification on the input will influence the results.
-
-6. Under the image upload button, there will be the JSON metadata created by Claude for the metadata stored in OpenSearch alongside the vector. We can use that to compare how the images were ingested and how close the metadatas are.
 
 # Cleanup Process:
 
