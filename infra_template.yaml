@@ -155,8 +155,13 @@ Resources:
           - Effect: Allow
             Action:
               - ecs:*
-              - iam:PassRole
             Resource: "*"
+          - Effect: Allow
+            Action:
+              - iam:PassRole
+            Resource:
+              - !GetAtt TaskRole.Arn
+              - !GetAtt TaskExecutionRole.Arn
 
 
   # IAM Role for Lambda Function
@@ -203,7 +208,6 @@ Resources:
       VpcId: !Ref VPC
       AvailabilityZone: !Select [0, !GetAZs '']
       CidrBlock: 10.0.0.0/24
-      MapPublicIpOnLaunch: true
 
   # Public Subnet 2
   PublicSubnet2:
@@ -212,7 +216,6 @@ Resources:
       VpcId: !Ref VPC
       AvailabilityZone: !Select [1, !GetAZs '']
       CidrBlock: 10.0.1.0/24
-      MapPublicIpOnLaunch: true
 
   # Route Table for Public Subnets
   PublicRouteTable:
@@ -238,6 +241,12 @@ Resources:
           FromPort: 8501
           ToPort: 8501
           CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
+
 
   # Associate Public Subnet 1 with Public Route Table
   PublicSubnet1RouteTableAssociation:
@@ -304,6 +313,12 @@ Resources:
           FromPort: 80
           ToPort: 80
           CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
+
 
   # ALB Listener
   InferenceALBListener:
@@ -535,6 +550,7 @@ Resources:
         PriceClass: PriceClass_100
         ViewerCertificate:
           CloudFrontDefaultCertificate: true
+          MinimumProtocolVersion: TLSv1.2_2021
         CacheBehaviors:
           - PathPattern: '/repair-data/*'
             AllowedMethods:
