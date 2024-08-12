@@ -3,7 +3,6 @@ import json
 import base64
 from PIL import Image
 from opensearchpy import OpenSearch, RequestsHttpConnection
-import subprocess
 from requests_aws4auth import AWS4Auth
 import os
 from datetime import datetime
@@ -272,7 +271,6 @@ def ingest_image(client, filename, folder_path, os_index_name, os_host, instruct
 
                 body_output = body.read()
 
-                #endpoint = subprocess.check_output(["aws", "opensearchserverless", "batch-get-collection", "--names", "mycollection"]).decode().split('"')[7]
                 data['s3_location'] = key
                 metadata = data
 
