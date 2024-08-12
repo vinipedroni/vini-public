@@ -62,7 +62,7 @@ CloudFormation Deployments
 
 Once the CloudFormation stack has finished deploying, go to the outputs tab, look for the "InferenceUIURL" key, you should see a cloudfront distribution link, click there should take you to the inference ui.
 
-![CFN Outputs](/static_assets/cfn_output.png)
+![CFN Outputs](/static_assets/cfn_output_1.png)
 
 ## Step 4: Testing the Solution:
 
