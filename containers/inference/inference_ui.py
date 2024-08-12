@@ -56,20 +56,20 @@ damage_area_options = ['Hood', 'Rear Left', 'Rear Right', 'Front Left', 'Front R
 damage_type_options = ['Scratch', 'Dent', 'Fender Bender', "Broken"]
 damage_sev_option = ['light', 'moderate', 'severe', 'major']
 
-options = ['Honda', 'Toyota', 'Nissan']
+options = ['Make_1', 'Make_2', 'Make_3']
 selected = st.sidebar.selectbox('Select Car Make', options)
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
 # Make and Model options
-if selected == 'Honda':
-    second_options = ['Civic']
-elif selected == 'Toyota':
-    second_options = ['Corolla'] 
+if selected == 'Make_1':
+    second_options = ['Model_1']
+elif selected == 'Make_2':
+    second_options = ['Model_2'] 
 else:
-    selected = ['Nissan']
-    second_options = ['Altima']
+    selected = ['Make_3']
+    second_options = ['Model_3']
 
 # Select boxes for all options
 selected_make = st.sidebar.selectbox('Second Make', second_options)

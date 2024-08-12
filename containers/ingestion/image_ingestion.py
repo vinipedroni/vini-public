@@ -24,9 +24,9 @@ session = boto3.Session()
 
 
 #Set variables for the locations of each data_set
-civic_folder = '/home/appuser/app/civic'
-corolla_folder = '/home/appuser/app/corolla' 
-altima_folder = '/home/appuser/app/altima' 
+model_1_folder = '/home/appuser/app/model_1'
+model_2_folder = '/home/appuser/app/model_2' 
+model_3_folder = '/home/appuser/app/model_3' 
 
 
 #Get SSM Parameter values for OpenSearch Domain and
@@ -61,20 +61,20 @@ bedrock = session.client("bedrock-runtime", config=config)
 s3 = session.client('s3')
 
 #Define the JSON Creation metadata instruction for each car Make/Model
-instruction_civic = 'Instruction: You are a damage repair cost estimator and based on the image you need to create a json output as close as possible to the <model>, \
+instruction_model_1 = 'Instruction: You are a damage repair cost estimator and based on the image you need to create a json output as close as possible to the <model>, \
 you need to estimate the repair cost to populate within the output and you need to provide the damage_severity according to the <criteria>, \
 you also need to provide a damage_description which is short and less than 10 words. Just provide the json output in the response, do not explain the reasoning. \
-For testing purposes assume the image is from a Honda Civic in the state of Florida.'
+For testing purposes assume the image is from a ficticious car brand "Make_1" and a ficticious model "Model_1" in the state of Florida.'
 
-instruction_corolla = 'Instruction: You are a damage repair cost estimator and based on the image you need to create a json output as close as possible to the <model>, \
+instruction_model_2 = 'Instruction: You are a damage repair cost estimator and based on the image you need to create a json output as close as possible to the <model>, \
 you need to estimate the repair cost to populate within the output and you need to provide the damage_severity according to the <criteria>, \
 you also need to provide a damage_description which is short and less than 10 words. Just provide the json output in the response, do not explain the reasoning. \
-For testing purposes assume the image is from a Toyota Corolla in the state of Florida.'
+For testing purposes assume the image is from a ficticious car brand "Make_2" and a ficticious model "Model_2" in the state of Florida.'
 
-instruction_altima = 'Instruction: You are a damage repair cost estimator and based on the image you need to create a json output as close as possible to the <model>, \
+instruction_model_3 = 'Instruction: You are a damage repair cost estimator and based on the image you need to create a json output as close as possible to the <model>, \
 you need to estimate the repair cost to populate within the output and you need to provide the damage_severity according to the <criteria>, \
 you also need to provide a damage_description which is short and less than 10 words. Just provide the json output in the response, do not explain the reasoning. \
-For testing purposes assume the image is from a Nissan Altima in the state of Florida.'
+For testing purposes assume the image is from a ficticious car brand "Make_3" and a ficticious model "Model_3" in the state of Florida.'
 
 bedrock_client = session.client('bedrock-runtime', config=config)
 
@@ -104,7 +104,6 @@ def create_json_metadata(encoded_image, instruction):
     repair_cost > 1000 AND < 2000 = severe \
     repair_cost > 2000 = major \
     </criteria>'
-    #instruction = 'Instruction: You are a damage repair cost estimator and based on the image you need to create a json output as close as possible to the <model>, you need to estimate the repair cost to populate within the output and you need to provide the damage_severity according to the <criteria>, you also need to provide a damage_description which is short and less than 10 words. Just provide the json output in the response, do not explain the reasoning. For testing purposes assume the image is from a Honda Civic in the state of Florida.'
     prompt = criteria_cost + model + instruction 
     invoke_body = {
     'anthropic_version': 'bedrock-2023-05-31',
@@ -328,9 +327,9 @@ print(start_time)
 print('-----------------------------')
 
 #Calls the function for ingestion of data
-image_ingestion(civic_folder, os_index_name, os_host, instruction_civic)
-image_ingestion(corolla_folder, os_index_name, os_host, instruction_corolla)
-image_ingestion(altima_folder, os_index_name, os_host, instruction_altima)
+image_ingestion(model_1_folder, os_index_name, os_host, instruction_model_1)
+image_ingestion(model_2_folder, os_index_name, os_host, instruction_model_2)
+image_ingestion(model_3_folder, os_index_name, os_host, instruction_model_3)
 
 #print the end date time
 end_time = datetime.now()

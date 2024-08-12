@@ -20,9 +20,9 @@ RUN adduser -u 5678 --disabled-password --gecos "" appuser
 WORKDIR /home/appuser/app
 RUN ls -la
 RUN pwd
-COPY data_set/altima /home/appuser/app/altima
-COPY data_set/civic /home/appuser/app/civic
-COPY data_set/corolla /home/appuser/app/corolla
+COPY data_set/model_1 /home/appuser/app/model_1
+COPY data_set/model_2 /home/appuser/app/model_2
+COPY data_set/model_3 /home/appuser/app/model_3
 COPY image_ingestion.py /home/appuser/app
 RUN cat image_ingestion.py
 
