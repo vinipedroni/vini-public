@@ -27,9 +27,9 @@ COPY image_ingestion.py /home/appuser/app
 RUN cat image_ingestion.py
 
 RUN ls -la
-RUN ls -la civic
-RUN ls -la altima
-RUN ls -la corolla
+RUN ls -la model_1
+RUN ls -la model_2
+RUN ls -la model_3
 RUN chown -R appuser /home/appuser/app
 
 USER appuser
